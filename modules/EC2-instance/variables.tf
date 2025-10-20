@@ -12,7 +12,7 @@ variable "security_group_id" {
 
 variable "vpc_public_subnet_id" {
   description = "Public subnet ID"
-  type = string
+  type        = string
 }
 
 variable "vpc_private_subnet_id" {

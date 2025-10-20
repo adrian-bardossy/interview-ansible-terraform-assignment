@@ -22,12 +22,12 @@ module "Security_Group" {
 # }
 
 module "EC2-instance" {
-  source                 = "./modules/EC2-instance"
-  instance_name          = var.instance_name
-  KP_name                = module.KP.ec2_private_key_name
-  security_group_id      = module.Security_Group.SSH_SG_id
-  nginx_sg_id            = module.Security_Group.Nginx_SG_id
-  vpc_public_subnet_id   = module.VPC.vpc_public_subnet_id[0]
+  source                = "./modules/EC2-instance"
+  instance_name         = var.instance_name
+  KP_name               = module.KP.ec2_private_key_name
+  security_group_id     = module.Security_Group.SSH_SG_id
+  nginx_sg_id           = module.Security_Group.Nginx_SG_id
+  vpc_public_subnet_id  = module.VPC.vpc_public_subnet_id[0]
   vpc_private_subnet_id = module.VPC.vpc_private_subnet_id[0]
 
   depends_on = [
