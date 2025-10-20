@@ -74,6 +74,14 @@ resource "aws_security_group" "nginx_app_sg" {
     security_groups = [aws_security_group.alb_sg.id]
   }
 
+  ingress {
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    description     = "HTTPS from ALB"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
+
   # Allow HTTP and HTTPS from VPC
   ingress {
     from_port   = 80
