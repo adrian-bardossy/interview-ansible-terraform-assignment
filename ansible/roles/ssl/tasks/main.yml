@@ -1,0 +1,41 @@
+- name: Create directory for SSL certificates
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+    mode: '0755'
+
+- name: Generate self-signed SSL certificate
+  command: >
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048
+    -keyout /etc/nginx/ssl/selfsigned.key
+    -out /etc/nginx/ssl/selfsigned.crt
+    -subj "/C=US/ST=None/L=None/O=None/OU=None/CN=localhost"
+  args:
+    creates: /etc/nginx/ssl/selfsigned.crt
+
+- name: Configure NGINX for HTTPS
+  copy:
+    dest: /etc/nginx/sites-available/default
+    content: |
+      server {
+          listen 80;
+          listen 443 ssl;
+          ssl_certificate /etc/nginx/ssl/selfsigned.crt;
+          ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
+
+          location / {
+              root /var/www/html;
+              index index.html;
+          }
+
+          location /phrase {
+              root /var/www/html;
+              index index.html;
+          }
+      }
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+

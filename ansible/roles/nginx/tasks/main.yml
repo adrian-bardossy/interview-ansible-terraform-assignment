@@ -1,0 +1,54 @@
+- name: Copy all required NGINX .deb packages
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /tmp/
+    mode: '0644'
+  loop:
+    - /home/ubuntu/ansible/packages/nginx/nginx-common_1.24.0-2ubuntu7.5_all.deb
+    - /home/ubuntu/ansible/packages/nginx/nginx-core_1.24.0-2ubuntu7.5_all.deb
+    - /home/ubuntu/ansible/packages/nginx/nginx_1.24.0-2ubuntu7.5_amd64.deb
+    - /home/ubuntu/ansible/packages/nginx/libnginx-mod-http-geoip2_1%3a3.4-5build2_amd64.deb
+    - /home/ubuntu/ansible/packages/nginx/libnginx-mod-http-image-filter_1.24.0-2ubuntu7.5_amd64.deb
+    - /home/ubuntu/ansible/packages/nginx/libnginx-mod-http-xslt-filter_1.24.0-2ubuntu7.5_amd64.deb
+    - /home/ubuntu/ansible/packages/nginx/libnginx-mod-mail_1.24.0-2ubuntu7.5_amd64.deb
+    - /home/ubuntu/ansible/packages/nginx/libnginx-mod-stream_1.24.0-2ubuntu7.5_amd64.deb
+    - /home/ubuntu/ansible/packages/nginx/libnginx-mod-stream-geoip2_1%3a3.4-5build2_amd64.deb
+
+- name: Install all NGINX .deb packages offline
+  become: yes
+  ignore_errors: yes
+  block:
+    - name: Force use of shell explicitly
+      ansible.builtin.shell: |
+        dpkg -i /tmp/*.deb
+      args:
+        executable: /bin/bash
+
+# 🔹 Try fixing any dependencies without internet
+- name: Fix any broken dependencies (no internet)
+  shell: "apt-get install -f -y --no-download"
+  become: yes
+  ignore_errors: yes
+
+- name: Ensure NGINX is running and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Ensure phrase directory exists
+  file:
+    path: /var/www/html/phrase
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Create custom phrase endpoint
+  copy:
+    dest: /var/www/html/phrase/index.html
+    content: "{{ phrase_message }}"
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
