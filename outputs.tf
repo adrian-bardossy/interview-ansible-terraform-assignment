@@ -35,6 +35,10 @@ output "alb_dns_name" {
   value = module.ALB.alb_dns_name
 }
 
-output "public_ip" {
+output "ansible_instance_public_ip" {
   value = module.EC2-instance.ansible_eip_public_ip
+}
+
+output "nginx_private_ips" {
+  value = module.EC2-instance.nginx_private_ips
 }

@@ -26,7 +26,7 @@
 
 # 🔹 Try fixing any dependencies without internet
 - name: Fix any broken dependencies (no internet)
-  shell: "apt-get install -f -y --no-download"
+  shell: "apt install -f -y --no-download"
   become: yes
   ignore_errors: yes
 
