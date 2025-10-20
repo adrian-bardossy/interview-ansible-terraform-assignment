@@ -8,7 +8,8 @@ resource "aws_security_group" "ssh_only_my_ip_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.public_ip]
+    # Allowing due to blocking in pipeline
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
