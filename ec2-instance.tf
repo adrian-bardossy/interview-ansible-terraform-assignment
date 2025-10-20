@@ -10,11 +10,11 @@ module "Security_Group" {
 }
 
 module "ALB" {
-  source                = "./modules/ALB"
-  vpc_id                = module.VPC.vpc_id
+  source               = "./modules/ALB"
+  vpc_id               = module.VPC.vpc_id
   vpc_public_subnet_id = module.VPC.vpc_public_subnet_id
-  alb_sg_id             = module.Security_Group.Alb_SG_id
-  nginx_instance_ids    = module.EC2-instance.nginx_instance_ids
+  alb_sg_id            = module.Security_Group.Alb_SG_id
+  nginx_instance_ids   = module.EC2-instance.nginx_instance_ids
 
 
   depends_on = [
