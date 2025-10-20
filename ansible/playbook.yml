@@ -1,0 +1,9 @@
+- name: Configure NGINX servers
+  hosts: nginx
+  become: yes
+  vars:
+    phrase_message: "Hello from Phrase!"
+  roles:
+    - nginx
+    - ssl
+
