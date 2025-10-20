@@ -58,25 +58,28 @@ jobs:
             sudo chown ubuntu:ubuntu /home/ubuntu/ansible/ubuntu_KP.pem && \
             chmod 600 /home/ubuntu/ansible/ubuntu_KP.pem"      
          
-      - name: Generate dynamic Ansible inventory
+      - name: Upload Ansible dir to Bastion
         if: github.ref == 'refs/heads/main'
         run: |
+          IP=$(terraform output -raw ansible_instance_public_ip)
+          chmod 600 ubuntu_KP.pem
+          scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no -r ansible/ ubuntu@$IP:/home/ubuntu/
+          
+      - name: Build and copy inventory.ini
+        if: github.ref == 'refs/heads/main'
+        run: |
+          IP=$(terraform output -raw ansible_instance_public_ip)
           echo "[nginx]" > inventory.ini
           terraform output -json nginx_private_ips | jq -r '.[]' >> inventory.ini
-          echo "Generated dynamic inventory file:"
-          cat inventory.ini
-          mkdir -p ansible
-          cp inventory.ini ansible/inventory.ini
+          scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no inventory.ini ubuntu@$IP:/home/ubuntu/
+          ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
+            mv /home/ubuntu/inventory.ini /home/ubuntu/ansible/inventory.ini"
+          
+      - name: Run Ansible playbook on Bastion
+        if: github.ref == 'refs/heads/main'
+        run: |
+          IP=$(terraform output -raw ansible_instance_public_ip)
+          ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
+            cd ansible/ && ansible-playbook -i inventory.ini playbook.yml"
+          
       
-      # - name: Upload Ansible inventory to Bastion
-      #   if: github.ref == 'refs/heads/main'
-      #   run: |
-      #     ANSIBLE_IP=$(terraform output -raw ansible_instance_public_ip)
-      #     echo "Uploading inventory.ini to Bastion at $ANSIBLE_IP..."
-      #     scp -o StrictHostKeyChecking=no inventory.ini ubuntu@$ANSIBLE_IP:/home/ubuntu/
-      #     ssh -o StrictHostKeyChecking=no ubuntu@$ANSIBLE_IP "\
-      #       mkdir -p /home/ubuntu/ansible && \
-      #       mv /home/ubuntu/inventory.ini /home/ubuntu/ansible/inventory.ini && \
-      #       chown ubuntu:ubuntu /home/ubuntu/ansible/inventory.ini && \
-      #       chmod 644 /home/ubuntu/ansible/inventory.ini"
-      #     echo "Inventory file successfully uploaded to Bastion"
