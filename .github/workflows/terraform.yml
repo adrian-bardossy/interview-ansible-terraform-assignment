@@ -51,10 +51,10 @@ jobs:
         run: |
           ANSIBLE_IP=$(terraform output -raw ansible_instance_public_ip)
           echo "Copying key to Bastion at $ANSIBLE_IP..."
-          scp -o StrictHostKeyChecking=no ubuntu_KP.pem ubuntu@$ANSIBLE_IP:/home/ubuntu/
+          scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu_KP.pem ubuntu@$ANSIBLE_IP:/home/ubuntu/
           echo "Copied the key to the ansible instance"
           mkdir -p ~/.ssh && echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-          ssh -o StrictHostKeyChecking=no ubuntu@$ANSIBLE_IP "\
+          ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$ANSIBLE_IP "\
             sudo mkdir -p /home/ubuntu/ansible && \
             sudo mv /home/ubuntu/ubuntu_KP.pem /home/ubuntu/ansible/ && \
             sudo chown ubuntu:ubuntu /home/ubuntu/ansible/ubuntu_KP.pem && \
@@ -83,5 +83,3 @@ jobs:
             chown ubuntu:ubuntu /home/ubuntu/ansible/inventory.ini && \
             chmod 644 /home/ubuntu/ansible/inventory.ini"
           echo "Inventory file successfully uploaded to Bastion"
-
-
