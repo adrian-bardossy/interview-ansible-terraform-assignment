@@ -27,6 +27,12 @@ No resources.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_my_ip_ssh_arn"></a> [my\_ip\_ssh\_arn](#output\_my\_ip\_ssh\_arn) | n/a |
-| <a name="output_my_ip_ssh_id"></a> [my\_ip\_ssh\_id](#output\_my\_ip\_ssh\_id) | n/a |
-| <a name="output_my_ip_ssh_name"></a> [my\_ip\_ssh\_name](#output\_my\_ip\_ssh\_name) | n/a |
+| <a name="output_Alb_SG_arn"></a> [Alb\_SG\_arn](#output\_Alb\_SG\_arn) | n/a |
+| <a name="output_Alb_SG_id"></a> [Alb\_SG\_id](#output\_Alb\_SG\_id) | n/a |
+| <a name="output_Alb_SG_name"></a> [Alb\_SG\_name](#output\_Alb\_SG\_name) | ALB SG outputs |
+| <a name="output_Nginx_SG_arn"></a> [Nginx\_SG\_arn](#output\_Nginx\_SG\_arn) | n/a |
+| <a name="output_Nginx_SG_id"></a> [Nginx\_SG\_id](#output\_Nginx\_SG\_id) | n/a |
+| <a name="output_Nginx_SG_name"></a> [Nginx\_SG\_name](#output\_Nginx\_SG\_name) | NGINX SG outputs |
+| <a name="output_SSH_SG_arn"></a> [SSH\_SG\_arn](#output\_SSH\_SG\_arn) | n/a |
+| <a name="output_SSH_SG_id"></a> [SSH\_SG\_id](#output\_SSH\_SG\_id) | n/a |
+| <a name="output_SSH_SG_name"></a> [SSH\_SG\_name](#output\_SSH\_SG\_name) | SSH SG outputs |
