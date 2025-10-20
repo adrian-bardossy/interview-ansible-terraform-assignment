@@ -17,9 +17,10 @@ output "Alb_SG_name" {
   value = module.Security_Group.Alb_SG_name
 }
 
-output "Alb_SG_id" {
+output "ALB_SG_id" {
   value = module.Security_Group.Alb_SG_id
 }
+
 
 output "Nginx_SG_name" {
   value = module.Security_Group.Nginx_SG_name
@@ -27,4 +28,9 @@ output "Nginx_SG_name" {
 
 output "Nginx_SG_id" {
   value = module.Security_Group.Nginx_SG_id
+}
+
+# ALB outputs
+output "alb_dns_name" {
+  value = module.ALB.alb_dns_name
 }
