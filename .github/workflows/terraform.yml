@@ -45,16 +45,5 @@ jobs:
       - name: Terraform Apply (only on main)
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve -input=false
-      
-      - name: Get Ansible public IP
-        id: get_ip
-        run: |
-          echo "ANSIBLE_IP=$(terraform output -raw public_ip)" >> $GITHUB_ENV
-  
-      - name: Copy private key to Ansible instance
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "Copying SSH key to $ANSIBLE_IP"
-          scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no ./ubuntu_KP.pem ubuntu@$ANSIBLE_IP:/home/ubuntu/ansible/
-          ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$ANSIBLE_IP "chmod 600 /home/ubuntu/ansible/ubuntu_KP.pem && chown ubuntu:ubuntu /home/ubuntu/ansible/ubuntu_KP.pem"
+
   
