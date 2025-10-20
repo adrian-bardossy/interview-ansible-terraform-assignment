@@ -18,9 +18,8 @@ module "vpc" {
 
 # Adding VPC routing to provate subnet
 resource "aws_route" "private_allow_internal" {
-  for_each = toset(module.vpc.private_route_table_ids)
-
-  route_table_id         = each.value
+  route_table_id         = module.vpc.private_route_table_ids[0]
   destination_cidr_block = local.vpc_subnet
   gateway_id             = local.local_gateway
 }
+
