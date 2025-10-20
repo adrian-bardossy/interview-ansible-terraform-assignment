@@ -74,6 +74,31 @@ resource "aws_security_group" "nginx_app_sg" {
     security_groups = [aws_security_group.alb_sg.id]
   }
 
+  ingress {
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    description     = "HTTPS from ALB"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
+
+  # Allow HTTP and HTTPS from VPC
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+    description = "Allow HTTP from inside VPC"
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+    description = "Allow HTTPS from inside VPC"
+  }
+
   # Allow SSH from the Ansible instance
   ingress {
     from_port       = 22
