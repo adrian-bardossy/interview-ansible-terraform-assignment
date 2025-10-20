@@ -34,3 +34,7 @@ output "Nginx_SG_id" {
 output "alb_dns_name" {
   value = module.ALB.alb_dns_name
 }
+
+output "public_ip" {
+  value = module.EC2-instance.ansible_eip_public_ip
+}

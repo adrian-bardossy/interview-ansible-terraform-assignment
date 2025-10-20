@@ -45,6 +45,7 @@ resource "aws_instance" "ansible_instance" {
   }
 }
 
+
 resource "aws_instance" "nginx_instances" {
   count                       = 3
   ami                         = data.aws_ami.ubuntu_24.id
