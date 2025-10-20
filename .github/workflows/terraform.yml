@@ -63,7 +63,11 @@ jobs:
         run: |
           IP=$(terraform output -raw ansible_instance_public_ip)
           chmod 600 ubuntu_KP.pem
-          scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no -r ansible/ ubuntu@$IP:/home/ubuntu/
+          ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
+            sudo mkdir -p /home/ubuntu/ansible && \
+            sudo chown -R ubuntu:ubuntu /home/ubuntu/ansible && \
+            sudo chmod -R 755 /home/ubuntu/ansible"
+          scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no -r ansible/* ubuntu@$IP:/home/ubuntu/ansible/
           
       - name: Build and copy inventory.ini
         if: github.ref == 'refs/heads/main'
@@ -71,15 +75,20 @@ jobs:
           IP=$(terraform output -raw ansible_instance_public_ip)
           echo "[nginx]" > inventory.ini
           terraform output -json nginx_private_ips | jq -r '.[]' >> inventory.ini
+          chmod 600 ubuntu_KP.pem
           scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no inventory.ini ubuntu@$IP:/home/ubuntu/
           ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
-            mv /home/ubuntu/inventory.ini /home/ubuntu/ansible/inventory.ini"
-          
+            sudo mv /home/ubuntu/inventory.ini /home/ubuntu/ansible/inventory.ini && \
+            sudo chown ubuntu:ubuntu /home/ubuntu/ansible/inventory.ini && \
+            sudo chmod 644 /home/ubuntu/ansible/inventory.ini"
+        
       - name: Run Ansible playbook on Bastion
         if: github.ref == 'refs/heads/main'
         run: |
           IP=$(terraform output -raw ansible_instance_public_ip)
+          chmod 600 ubuntu_KP.pem
           ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
-            cd ansible/ && ansible-playbook -i inventory.ini playbook.yml"
+            cd /home/ubuntu/ansible && ansible-playbook -i inventory.ini playbook.yml"
+        
           
       
