@@ -16,10 +16,4 @@ module "vpc" {
   }
 }
 
-# Adding VPC routing to provate subnet
-resource "aws_route" "private_allow_internal" {
-  route_table_id         = module.vpc.private_route_table_ids[0]
-  destination_cidr_block = local.vpc_subnet
-  gateway_id             = local.local_gateway
-}
 
