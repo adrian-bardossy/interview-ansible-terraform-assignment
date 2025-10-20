@@ -8,7 +8,7 @@ module "vpc" {
   public_subnets       = local.public_subnets
   private_subnets      = local.private_subnets
   enable_dns_hostnames = true
-  enable_nat_gateway   = true
+  enable_nat_gateway   = false
   tags = {
     deployedBy = "terraform"
     deploter   = "AdrianBardossy"
