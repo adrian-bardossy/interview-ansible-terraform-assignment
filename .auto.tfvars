@@ -1,0 +1,5 @@
+aws_region = "eu-west-1"
+instance_key_name = "ubuntu.pem"
+instance_name = "ubuntu_instance"
+public_ip = "85.193.39.30/32"
+vpc_name = "interview_vpc"
