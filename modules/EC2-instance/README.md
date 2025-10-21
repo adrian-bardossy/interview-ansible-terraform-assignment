@@ -38,4 +38,5 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_ansible_eip_public_ip"></a> [ansible\_eip\_public\_ip](#output\_ansible\_eip\_public\_ip) | n/a |
+| <a name="output_nginx_instance_ids"></a> [nginx\_instance\_ids](#output\_nginx\_instance\_ids) | List of NGINX EC2 instance IDs |
 | <a name="output_nginx_private_ips"></a> [nginx\_private\_ips](#output\_nginx\_private\_ips) | n/a |

@@ -1,4 +1,4 @@
-name: Terraform CI
+name: Terraform and Asnsible deployment
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   terraform:
-    name: Terraform running on main branch (fmt, init, validate, plan, apply)
+    name: Terraform running on main branch (fmt, init, validate, plan, apply), Ansible running on main branch to configure the instances
     runs-on: ubuntu-latest
 
     env:
@@ -24,7 +24,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1 
-
+      
+      - name: Install Ansible on GitHub Runner
+        run: |
+          sudo apt update -y
+          sudo apt install -y python3-pip ansible
+          ansible --version
+      
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -38,6 +44,9 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
+      
+      - name: Terraform Workspace select
+        run:  terraform workspace new Interview && terraform workspace select Interview
 
       - name: Terraform Plan
         run: terraform plan -input=false
@@ -46,7 +55,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve -input=false
       
-      - name: Copy SSH key to Bastion
+      - name: Copy SSH key to the Ansible instance
         if: github.ref == 'refs/heads/main'
         run: |
           ANSIBLE_IP=$(terraform output -raw ansible_instance_public_ip)
@@ -58,7 +67,7 @@ jobs:
             sudo chown ubuntu:ubuntu /home/ubuntu/ansible/ubuntu_KP.pem && \
             chmod 600 /home/ubuntu/ansible/ubuntu_KP.pem"      
          
-      - name: Upload Ansible dir to Bastion
+      - name: Upload Ansible configuration dir to the ansible instance
         if: github.ref == 'refs/heads/main'
         run: |
           IP=$(terraform output -raw ansible_instance_public_ip)
@@ -69,7 +78,7 @@ jobs:
             sudo chmod -R 755 /home/ubuntu/ansible"
           scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no -r ansible/* ubuntu@$IP:/home/ubuntu/ansible/
           
-      - name: Build and copy inventory.ini
+      - name: Generate and replace inventory.ini in the downloaded ansible folder on the ansible instance
         if: github.ref == 'refs/heads/main'
         run: |
           IP=$(terraform output -raw ansible_instance_public_ip)
@@ -82,7 +91,7 @@ jobs:
             sudo chown ubuntu:ubuntu /home/ubuntu/ansible/inventory.ini && \
             sudo chmod 644 /home/ubuntu/ansible/inventory.ini"
         
-      - name: Run Ansible playbook on Bastion
+      - name: Run Ansible playbook on the Ansible instance
         if: github.ref == 'refs/heads/main'
         run: |
           IP=$(terraform output -raw ansible_instance_public_ip)
