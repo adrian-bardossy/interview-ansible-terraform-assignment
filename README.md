@@ -36,6 +36,7 @@ It builds a complete environment consisting of:
 - Copy SSH key to  Ansible instance (`/home/ubuntu/`) 
 - Upload git ansible config `ansible/` directory to Ansible instance 
 - Generate `inventory.ini` from Terraform outputs and copy it to Ansible instance
+- Installs ansible just in case it wasn't installed in the bootstrap script on the instance
 - Run Ansible playbook on the ansible instance
 
 ## Ansible Configuration
