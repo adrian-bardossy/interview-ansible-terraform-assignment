@@ -52,6 +52,18 @@ jobs:
       - name: Terraform Apply (only on main)
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve -input=false
+
+      - name: Wait for bootstrap script to finish
+        if: github.ref == 'refs/heads/main'
+        run: |
+          IP=$(terraform output -raw ansible_instance_public_ip)
+          chmod 600 ubuntu_KP.pem
+          echo "Waiting for bootrap script to finish on $IP..."
+          ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
+            while sudo pgrep cloud-init >/dev/null 2>&1; do \
+              echo 'cloud-init still running, waiting 1 minute...'; sleep 60; \
+            done; \
+            echo 'cloud-init finished successfully.'"
       
       - name: Copy SSH key to the Ansible instance
         if: github.ref == 'refs/heads/main'
@@ -92,18 +104,6 @@ jobs:
           } > inventory.ini
           scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no inventory.ini ubuntu@$IP:/home/ubuntu/
           ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "mv inventory.ini ansible/inventory.ini && chmod 644 ansible/inventory.ini"
-        
-      - name: Wait for Ansible instance bootstrap script to finish and make ansible available
-        if: github.ref == 'refs/heads/main'
-        run: |
-          IP=$(terraform output -raw ansible_instance_public_ip)
-          chmod 600 ubuntu_KP.pem
-          echo "Waiting for bootrap script to finish on $IP..."
-          ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
-            while sudo pgrep cloud-init >/dev/null 2>&1; do \
-              echo 'cloud-init still running, waiting 1 minute...'; sleep 60; \
-            done; \
-            echo 'cloud-init finished successfully.'"
                
       - name: Run Ansible playbook on the Ansible instance
         if: github.ref == 'refs/heads/main'

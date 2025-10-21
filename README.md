@@ -32,10 +32,10 @@ It builds a complete environment consisting of:
 - Checkout repository 
 - Configure AWS credentials
 - Terraform Init / Validate / Plan / Apply
+- Wait for bootstrap script to finish
 - Copy SSH key to  Ansible instance (`/home/ubuntu/`) 
 - Upload git ansible config `ansible/` directory to Ansible instance 
 - Generate `inventory.ini` dynamically from Terraform outputs and copy it to Ansible instance 
-- Wait for Ansible instance bootstrap script to finish and make ansible available for ansible-playbook
 - Run Ansible playbook on the ansible instance
 
 ## Ansible Configuration
