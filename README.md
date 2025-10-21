@@ -35,7 +35,7 @@ It builds a complete environment consisting of:
 - Terraform Init / Validate / Plan / Apply
 - Copy SSH key to  Ansible instance (`/home/ubuntu/`) 
 - Upload git ansible config `ansible/` directory to Ansible instance 
-- Generate `inventory.ini` from Terraform outputs and copy it to Ansible instance
+- Generate `inventory.ini` dynamically from Terraform outputs and copy it to Ansible instance 
 - Wait for Ansible instance bootstrap script to finish and make ansible available for ansible-playbook
 - Run Ansible playbook on the ansible instance
 
@@ -60,10 +60,9 @@ Contaning:
 - Generates self-signed SSL certificate
 - Restarts nginx service to apply the self-signed SSL certificate
 
-### Dynamic invenotry.ini
+### Dynamic inventory.ini
 - pre-configured inventory.ini contains 3 IP addresses
-- pipeline job Generate and replace inventory.ini in the downloaded ansible folder on the ansible instance will replace them in place and store them on ansible instance
-- [nginx]
+- pipeline job Generate and replace inventory.ini in the downloaded ansible folder on the ansible instance will replace them in place and store them on ansible instance, IP addresses are just an example how it is filled
     10.0.1.35
     10.0.1.199
     10.0.1.207

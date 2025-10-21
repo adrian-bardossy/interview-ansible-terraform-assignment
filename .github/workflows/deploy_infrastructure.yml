@@ -82,19 +82,20 @@ jobs:
             sudo chmod -R 755 /home/ubuntu/ansible"
           scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no -r ansible/* ubuntu@$IP:/home/ubuntu/ansible/
           
-      - name: Generate and replace inventory.ini in the downloaded ansible folder on the ansible instance
+      - name: Generate `inventory.ini` dynamically from Terraform outputs and copy it to Ansible instance
         if: github.ref == 'refs/heads/main'
         run: |
           IP=$(terraform output -raw ansible_instance_public_ip)
-          echo "[nginx]" > inventory.ini
-          terraform output -json nginx_private_ips | jq -r '.[]' >> inventory.ini
+          TMP="inventory.ini"
+          cp ansible/inventory_base.ini $TMP
+      
+          # Insert the [nginx] section and private IPs above the vars
+          awk 'BEGIN{print "[nginx]"} 1' <(terraform output -json nginx_private_ips | jq -r '.[]') >> $TMP
           chmod 600 ubuntu_KP.pem
-          scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no inventory.ini ubuntu@$IP:/home/ubuntu/
+          scp -i ubuntu_KP.pem -o StrictHostKeyChecking=no $TMP ubuntu@$IP:/home/ubuntu/
           ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
-            sudo mv /home/ubuntu/inventory.ini /home/ubuntu/ansible/inventory.ini && \
-            sudo chown ubuntu:ubuntu /home/ubuntu/ansible/inventory.ini && \
-            sudo chmod 644 /home/ubuntu/ansible/inventory.ini"
-
+            mv -f ~/inventory.ini ~/ansible/inventory.ini && chmod 644 ~/ansible/inventory.ini"
+        
       - name: Wait for Ansible instance bootstrap script to finish and make ansible available
         if: github.ref == 'refs/heads/main'
         run: |
