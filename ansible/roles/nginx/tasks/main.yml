@@ -14,6 +14,13 @@
     - /home/ubuntu/ansible/packages/nginx/libnginx-mod-stream_1.24.0-2ubuntu7.5_amd64.deb
     - /home/ubuntu/ansible/packages/nginx/libnginx-mod-stream-geoip2_1%3a3.4-5build2_amd64.deb
 
+- name: Wait for dpkg lock to be released
+  shell: |
+    while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+      echo "Waiting for dpkg lock..."; sleep 30;
+    done
+  changed_when: false
+
 - name: Install all NGINX .deb packages offline
   become: yes
   ignore_errors: yes
