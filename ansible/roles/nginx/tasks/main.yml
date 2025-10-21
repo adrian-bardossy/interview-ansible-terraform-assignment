@@ -1,4 +1,4 @@
-- name: Copy all required NGINX .deb packages
+- name: Copy all required NGINX .deb packages (just to make sure if nginx installation on instance fails)
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: /tmp/
