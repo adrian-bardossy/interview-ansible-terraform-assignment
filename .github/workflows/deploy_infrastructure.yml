@@ -94,6 +94,18 @@ jobs:
             sudo mv /home/ubuntu/inventory.ini /home/ubuntu/ansible/inventory.ini && \
             sudo chown ubuntu:ubuntu /home/ubuntu/ansible/inventory.ini && \
             sudo chmod 644 /home/ubuntu/ansible/inventory.ini"
+
+      - name: Ensure Ansible is installed on Ansible instance
+        if: github.ref == 'refs/heads/main'
+        run: |
+          IP=$(terraform output -raw ansible_instance_public_ip)
+          chmod 600 ubuntu_KP.pem
+          echo "Installing Ansible on Bastion $IP..."
+          ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
+            sudo apt update -y && \
+            sudo apt install -y python3-pip git curl vim sshpass software-properties-common ansible && \
+            which ansible-playbook || echo 'Ansible installed but not in PATH'"
+          echo "Ansible installed successfully on Bastion."     
         
       - name: Run Ansible playbook on the Ansible instance
         if: github.ref == 'refs/heads/main'
