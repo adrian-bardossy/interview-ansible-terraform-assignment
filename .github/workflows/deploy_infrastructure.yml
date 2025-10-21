@@ -45,8 +45,12 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
       
-      - name: Terraform Workspace select
-        run:  terraform workspace new Interview && terraform workspace select Interview
+      - name: Terraform Workspace select or create
+        run: |
+          terraform workspace list | grep -q "Interview" \
+            && terraform workspace select Interview \
+            || terraform workspace new Interview
+
 
       - name: Terraform Plan
         run: terraform plan -input=false

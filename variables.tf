@@ -9,12 +9,6 @@ variable "instance_key_name" {
   description = "Name of the instance key pair"
 }
 
-# SG module vars
-variable "public_ip" {
-  type        = string
-  description = "Your public IP to be able to access the EC2 instance"
-}
-
 # EC2
 variable "instance_name" {
   type        = string
