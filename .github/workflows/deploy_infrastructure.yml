@@ -101,7 +101,7 @@ jobs:
           IP=$(terraform output -raw ansible_instance_public_ip)
           chmod 600 ubuntu_KP.pem
           ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
-            cd /home/ubuntu/ansible && /usr/local/bin/ansible-playbook -i inventory.ini playbook.yml"
+            cd /home/ubuntu/ansible && ansible-playbook -i inventory.ini playbook.yml"
         
           
       
