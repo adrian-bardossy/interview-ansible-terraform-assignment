@@ -67,18 +67,6 @@ Contaning:
     10.0.1.199
     10.0.1.207
 
-## Deployment Flow
-- Developer pushes to feature branch → pipeline runs Terraform Plan
-- After merge to main:
-  - Terraform Apply creates AWS resources
-  - SSH key is copied to Bastion
-  - Ansible folder + inventory transferred automatically
-  - Playbook runs from Bastion and configures all servers
-
-## Obtain ALB DNS name:
-- manually: terraform output alb_dns_name
-- in web: http://<alb_dns_name>/phrase
-
 ## Requirements
 
 | Name | Version |
@@ -110,6 +98,7 @@ No resources.
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region to deploy the resources into | `string` | n/a | yes |
 | <a name="input_instance_key_name"></a> [instance\_key\_name](#input\_instance\_key\_name) | Name of the instance key pair | `string` | n/a | yes |
 | <a name="input_instance_name"></a> [instance\_name](#input\_instance\_name) | Name of the AWS instance | `string` | n/a | yes |
+| <a name="input_public_ip"></a> [public\_ip](#input\_public\_ip) | Your public IP to be able to access the EC2 instance | `string` | n/a | yes |
 | <a name="input_vpc_name"></a> [vpc\_name](#input\_vpc\_name) | VPC | `string` | n/a | yes |
 
 ## Outputs

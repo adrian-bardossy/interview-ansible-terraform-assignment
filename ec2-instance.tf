@@ -4,9 +4,8 @@ module "KP" {
 }
 
 module "Security_Group" {
-  source    = "./modules/Security_Group"
-  public_ip = var.public_ip
-  vpc_id    = module.VPC.vpc_id
+  source = "./modules/Security_Group"
+  vpc_id = module.VPC.vpc_id
 }
 
 module "ALB" {
