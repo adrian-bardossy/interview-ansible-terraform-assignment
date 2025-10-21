@@ -112,4 +112,9 @@ jobs:
           IP=$(terraform output -raw ansible_instance_public_ip)
           chmod 600 ubuntu_KP.pem
           ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
-            chmod 600 ansible/ubuntu_KP.pem && cd ansible/ && ansible-playbook -i inventory.ini playbook.yml"
+            if ! command -v ansible-playbook >/dev/null 2>&1; then \
+              echo 'Ansible missing, installing...'; \
+              sudo apt update -y && sudo apt install -y ansible; \
+            fi && \
+            chmod 600 ansible/ubuntu_KP.pem && \
+            cd ansible/ && ansible-playbook -i inventory.ini playbook.yml"
