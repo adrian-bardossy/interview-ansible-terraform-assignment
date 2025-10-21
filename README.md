@@ -30,8 +30,7 @@ It builds a complete environment consisting of:
 
 ### Steps Summary
 - Checkout repository 
-- Configure AWS credentials 
-- Installs Ansible on github runner
+- Configure AWS credentials
 - Terraform Init / Validate / Plan / Apply
 - Copy SSH key to  Ansible instance (`/home/ubuntu/`) 
 - Upload git ansible config `ansible/` directory to Ansible instance 

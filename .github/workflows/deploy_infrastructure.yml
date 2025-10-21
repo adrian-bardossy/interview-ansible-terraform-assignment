@@ -23,13 +23,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1 
-      
-      - name: Install Ansible on GitHub Runner
-        run: |
-          sudo apt update -y
-          sudo apt install -y python3-pip ansible
-          ansible --version
+          aws-region: eu-west-1
       
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
@@ -107,7 +101,7 @@ jobs:
           echo "Waiting for bootrap script to finish on $IP..."
           ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
             while sudo pgrep cloud-init >/dev/null 2>&1; do \
-              echo 'cloud-init still running, waiting 15s...'; sleep 15; \
+              echo 'cloud-init still running, waiting 1 minute...'; sleep 60; \
             done; \
             echo 'cloud-init finished successfully.'"
                
@@ -117,7 +111,4 @@ jobs:
           IP=$(terraform output -raw ansible_instance_public_ip)
           chmod 600 ubuntu_KP.pem
           ssh -i ubuntu_KP.pem -o StrictHostKeyChecking=no ubuntu@$IP "\
-            cd /home/ubuntu/ansible && ansible-playbook -i inventory.ini playbook.yml"
-        
-          
-      
+            chmod 600 ansible/ubuntu_KP.pem && cd ansible/ && ansible-playbook -i inventory.ini playbook.yml"
